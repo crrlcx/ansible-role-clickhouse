@@ -14,11 +14,65 @@
   apt_repository:
     repo: "{{ clickhouse_apt_repository }}"
 
-- name: Install ClickHouse packages
-  apt:
+- name: get package facts
+  package_facts:
+    manager: auto
+
+- name: Unhold {{ item.pkg }} package version
+  become: yes
+  dpkg_selections:
     name: "{{ item.pkg }}"
-    state: "{{ item.state }}"
-    update_cache: yes
-    cache_valid_time: 600
+    selection: "install"
+  when:
+    - clickhouse_apt_force_apply
+    - item.state == 'present'
+    - item.pkg in ansible_facts.packages
+    - ansible_facts.packages[item.pkg][0].version != clickhouse_version
   with_items:
     - "{{ clickhouse_apt_packages }}"
+
+- name: Install ClickHouse packages
+  apt:
+    name: "{{ item.pkg }}{% if item.state == 'present' and clickhouse_version is defined and clickhouse_version != '' %}={{ clickhouse_version }}*{% endif %}"
+    state: "{{ item.state }}"
+    force: "{{ clickhouse_apt_force_apply }}"
+    force_apt_get: yes
+    update_cache: yes
+    purge: yes
+    cache_valid_time: "{{ apt_cache_timeout }}"
+  with_items:
+    - "{{ clickhouse_apt_packages }}"
+
+- name: Hold {{ item.pkg }} package version
+  become: yes
+  dpkg_selections:
+    name: "{{ item.pkg }}"
+    selection: "hold"
+  when:
+    - clickhouse_apt_hold_packages
+    - item.pkg in ansible_facts.packages
+    - item.state != 'absent'
+  with_items:
+    - "{{ clickhouse_apt_packages }}"
+
+- name: Override clickhouse-server systemd service
+  block:
+    - name: Check override path
+      file:
+        path: /etc/systemd/system/clickhouse-server.service.d
+        owner: root
+        group: root
+        mode: 0755
+        state: directory
+    - name: Create systemd service override file
+      template:
+        src: clickhouse-server.service.override.j2
+        dest: /etc/systemd/system/clickhouse-server.service.d/override.conf
+        owner: root
+        group: root
+        mode: 0644
+      notify:
+        - systemd daemon reload
+        - Restart ClickHouse
+  when:
+    - ansible_service_mgr == 'systemd'

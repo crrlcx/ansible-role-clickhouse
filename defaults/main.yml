@@ -1,37 +1,42 @@
 ---
 # file: clickhouse/defaults/main.yml
-
+clickhouse_apt_force_apply: no
+clickhouse_apt_hold_packages: yes
 clickhouse_apt_key_id: E0C56BD4
 clickhouse_apt_key_url: http://repo.yandex.ru/clickhouse/CLICKHOUSE-KEY.GPG
 clickhouse_apt_repository: "deb http://repo.yandex.ru/clickhouse/deb/stable main/"
 clickhouse_apt_packages:
+  - { pkg: "clickhouse-common-static", state: "present" }
+  - { pkg: "clickhouse-server",        state: "present" }
   - { pkg: "clickhouse-client",        state: "present" }
-  - { pkg: "clickhouse-server-common", state: "present" }
-  - { pkg: "clickhouse-server-base",   state: "present" }
-  - { pkg: "clickhouse-common-dbg",    state: "absent"  }
-  - { pkg: "clickhouse-compressor",    state: "absent"  }
+  - { pkg: "clickhouse-server-base",   state: "absent" }
+  - { pkg: "clickhouse-server-common", state: "absent" }
+  - { pkg: "clickhouse-common-dbg",    state: "absent" }
+  - { pkg: "clickhouse-compressor",    state: "absent" }
+clickhouse_version: ''
 
 clickhouse_system_user:  clickhouse
 clickhouse_system_group: clickhouse
 
 clickhouse_directories:
-  - { path: "{{ clickhouse_server_config_path }}", owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0755" }
-  - { path: "{{ clickhouse_path }}",               owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0700" }
-  - { path: "{{ clickhouse_tmp_path }}",           owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0777" }
-  - { path: "{{ clickhouse_log_path }}",           owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0775" }
+  - { path: "{{ clickhouse_server_config_path }}",        owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0755" }
+  - { path: "{{ clickhouse_server_config_path }}/conf.d", owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0755" }
+  - { path: "{{ clickhouse_tmp_path }}",                  owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0777" }
+  - { path: "{{ clickhouse_log_path }}",                  owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0775" }
+  - { path: "{{ clickhouse_path }}",                      owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0700" }
 
 clickhouse_host: localhost
 clickhouse_default_user: default
 clickhouse_default_password: ""
 clickhouse_server_config_path: /etc/clickhouse-server
 clickhouse_log_path: /var/log/clickhouse-server
-
+clickhouse_networks: []
+clickhouse_default_networks: [ '::1', '127.0.0.1' ]
 clickhouse_databases: []
 #  - { name: "example1", state: "absent"  }
 #  - { name: "example2", state: "present" }
 
 # USERS.XML
-
 clickhouse_profiles:
   - name: default
     settings:
@@ -69,7 +74,6 @@ clickhouse_quotas:
       - { duration: 3600, queries: 0, errors: 0, result_rows: 0, read_rows: 0, execution_time: 0 }
 
 # CONFIG.XML
-
 clickhouse_logger:
   level: trace
   log: "{{ clickhouse_log_path }}/clickhouse-server.log"
@@ -91,49 +95,56 @@ clickhouse_listen_host:
   - ::1
   - 127.0.0.1
 
-clickhouse_max_connections: 4096
-
-clickhouse_keep_alive_timeout: 3
-
-clickhouse_max_concurrent_queries: 100
-
-clickhouse_max_open_files: maximum
-
-clickhouse_uncompressed_cache_size: 8589934592
-
-clickhouse_mark_cache_size: 5368709120
-
+clickhouse_listen_reuse_port: 1
+clickhouse_listen_try: 1
 clickhouse_path: /var/lib/clickhouse/
-
 clickhouse_tmp_path: /var/lib/clickhouse/tmp/
-
 clickhouse_users_config: users.xml
-
 clickhouse_default_profile: default
-
 clickhouse_default_database: default
-
 clickhouse_timezone: UTC
-
 clickhouse_umask: "027"
+clickhouse_max_table_size_to_drop: 50000000000
 
-clickhouse_max_session_timeout: 3600
+clickhouse_tune_settings:
+  - name: max_connections
+    value: 4096
+  - name: keep_alive_timeout
+    value: 3
+  - name: max_concurrent_queries
+    value: 100
+  - name: max_open_files
+    value: maximum
+  - name: uncompressed_cache_size
+    value: 8589934592
+  - name: mark_cache_size
+    value: 5368709120
+  - name: max_session_timeout
+    value: 3600
+  - name: default_session_timeout
+    value: 60
 
-clickhouse_default_session_timeout: 60
-    
 clickhouse_graphite: []
-#  - { host: localhost, port: 42000, timeout: 0.1, interval: 60, root_path: one_min, metrics: true, events: true, asynchronous_metrics: true  }
-#  - { host: localhost, port: 42000, timeout: 0.1, interval: 1,  root_path: one_sec, metrics: true, events: true, asynchronous_metrics: false }
+  # - { host: localhost, port: 42000, timeout: 0.1, interval: 60, root_path: one_min, metrics: true, events: true, asynchronous_metrics: true  }
+  # - { host: localhost, port: 42000, timeout: 0.1, interval: 1,  root_path: one_sec, metrics: true, events: true, asynchronous_metrics: false }
 
-clickhouse_query_log: #[]
-  database: system
-  table: query_log
-  flush_interval_milliseconds: 7500
+clickhouse_query_log: []
+  # database: system
+  # table: query_log
+  # partition_by: "toMonday(event_date)"
+  # flush_interval_milliseconds: 7500
+
+clickhouse_query_thread_log: []
+  # database: system
+  # table: query_thread_log
+  # partition_by: "toMonday(event_date)"
+  # flush_interval_milliseconds: 7500
 
 clickhouse_part_log: []
-#  database: system
-#  table: part_log
-#  flush_interval_milliseconds: 7500
+  # database: system
+  # table: part_log
+  # partition_by: "toMonday(event_date)"
+  # flush_interval_milliseconds: 7500
 
 clickhouse_internal_dictionaries:
   reload_interval: 3600
@@ -226,4 +237,12 @@ clickhouse_merge_tree: []
 #  - name: compatibility_allow_sampling_expression_not_in_primary_key
 #    value: false
 
-clickhouse_max_table_size_to_drop: 50000000000
+clickhouse_macros: []
+
+clickhouse_cluster: []
+
+clickhouse_zookeeper_servers: []
+clickhouse_zookeeper_user: ''
+clickhouse_zookeeper_password: ''
+clickhouse_zookeeper_session_timeout_ms: 30000
+clickhouse_zookeeper_operation_timeout_ms: 10000

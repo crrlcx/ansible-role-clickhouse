@@ -9,8 +9,6 @@
     group: "{{ clickhouse_system_group }}"
     mode: 0644
   when: |
-    clickhouse_profiles|length > 0 or 
-    clickhouse_users|length > 0 or 
-    clickhouse_quotas|length > 0
-  notify:
-    - Restart ClickHouse
+    clickhouse_profiles | length > 0 or 
+    clickhouse_users | length > 0 or 
+    clickhouse_quotas | length > 0

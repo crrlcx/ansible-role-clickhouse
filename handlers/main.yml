@@ -1,6 +1,13 @@
 ---
 # file: clickhouse/handlers/main.yml
 
+- name: systemd daemon reload
+  command: systemctl daemon-reload
+  notify:
+    - Restart ClickHouse
+  when:
+    - ansible_service_mgr == 'systemd'
+
 - name: Start ClickHouse
   service:
     name: clickhouse-server

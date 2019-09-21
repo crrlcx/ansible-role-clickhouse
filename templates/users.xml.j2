@@ -1,58 +1,55 @@
-#jinja2: lstrip_blocks:True
 <?xml version="1.0"?>
+<!-- {{ ansible_managed }} -->
 <yandex>
     <!-- Profiles of settings. -->
     <profiles>
-    {% for profile in clickhouse_profiles %}
+{%  for profile in clickhouse_profiles %}
         <{{ profile.name }}>
-        {% for key, value in profile.settings.items() %}
+{%      for key, value in profile.settings.items() %}
             <{{ key }}>{{ value }}</{{ key }}>
-        {% endfor %}
+{%      endfor %}
         </{{ profile.name }}>
-    {% endfor %}
+{%  endfor %}
     </profiles>
-
     <!-- Users and ACL. -->
     <users>
-    {% for user in clickhouse_users %}
+{%  for user in clickhouse_users %}
         <{{ user.name }}>
             <password>{{ user.password }}</password>
             <networks>
-        {% for key, values in user.networks.items() %}
-            {% for value in values %}
+{%      for key, values in user.networks.items() %}
+{%          for value in values %}
                 <{{ key }}>{{ value }}</{{ key }}>
-            {% endfor %}
-        {% endfor %}
+{%          endfor %}
+{%      endfor %}
             </networks>
             <profile>{{ user.profile }}</profile>
             <quota>{{ user.quota }}</quota>
-        {% if user.allow_databases|default('')|length > 0 %}
+{%      if user.allow_databases|default('')|length > 0 %}
             <allow_databases>
-            {% for database in user.allow_databases %}
+{%          for database in user.allow_databases %}
                 <database>{{ database }}</database>
-            {% endfor %}
+{%          endfor %}
             </allow_databases>
-        {% endif %}
+{%      endif %}
         </{{ user.name }}>
-    {% endfor %}
+{%  endfor %}
     </users>
-
     <!-- Quotas. -->
     <quotas>
-    {% for quota in clickhouse_quotas %}
+{%  for quota in clickhouse_quotas %}
         <{{ quota.name }}>
-        {% for interval in quota.interval %}
+{%      for interval in quota.interval %}
             <interval>
                 <duration>{{ interval.duration }}</duration>
-
                 <queries>{{ interval.queries }}</queries>
                 <errors>{{ interval.errors }}</errors>
                 <result_rows>{{ interval.result_rows }}</result_rows>
                 <read_rows>{{ interval.read_rows }}</read_rows>
                 <execution_time>{{ interval.execution_time }}</execution_time>
             </interval>
-        {% endfor %}
+{%      endfor %}
         </{{ quota.name }}>
-    {% endfor %}
+{%  endfor %}
     </quotas>
 </yandex>

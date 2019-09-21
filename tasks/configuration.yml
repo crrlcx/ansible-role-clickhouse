@@ -1,7 +1,7 @@
 ---
 # file: clickhouse/tasks/configuration.yml
 
-- name: Ensure ClickHouse directories
+- name: Config | Ensure ClickHouse directories
   file:
     path: "{{ item.path }}"
     owner: "{{ item.owner }}"
@@ -11,7 +11,41 @@
   with_items:
     - "{{ clickhouse_directories }}"
 
-- name: Manage ClickHouse configuration
+- debug: var=clickhouse_macros
+
+- name: Config | Generate macros config
+  template:
+    src: macros.xml.j2
+    dest: "{{ clickhouse_server_config_path }}/conf.d/macros.xml"
+    owner: "{{ clickhouse_system_user }}"
+    group: "{{ clickhouse_system_group }}"
+  when:
+    - clickhouse_macros is defined
+
+- debug: var=clickhouse_cluster
+
+- name: Config | Generate remote-servers config
+  template:
+    src: remote-servers.xml.j2
+    dest: "{{ clickhouse_server_config_path }}/conf.d/remote-servers.xml"
+    owner: "{{ clickhouse_system_user }}"
+    group: "{{ clickhouse_system_group }}"
+  when:
+    - clickhouse_cluster is defined
+
+- debug: var=clickhouse_zookeeper_servers
+
+- name: Config | Generate zookeeper-servers config
+  template:
+    src: zookeeper-servers.xml.j2
+    dest: "{{ clickhouse_server_config_path }}/conf.d/zookeeper-servers.xml"
+    owner: "{{ clickhouse_system_user }}"
+    group: "{{ clickhouse_system_group }}"
+    mode: 0644
+  when:
+    - clickhouse_zookeeper_servers is defined
+
+- name: Config | Manage ClickHouse configuration
   template: 
     src: config.xml.j2
     dest: "{{ clickhouse_server_config_path }}/config.xml"
