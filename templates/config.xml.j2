@@ -87,7 +87,7 @@
     <!-- Default profile of settings.. -->
     <default_profile>{{ clickhouse_default_profile }}</default_profile>
     <!-- Default database. -->
-    <default_database>{{ clickhouse_default_database }}</default_database>         
+    <default_database>{{ clickhouse_default_database }}</default_database>
     <!-- Server time zone could be set here.
          Time zone is used when converting between String and DateTime types,
          when printing DateTime in text formats and parsing DateTime from text,
@@ -157,7 +157,7 @@
         -->
         <database>{{ clickhouse_query_log.database }}</database>
         <table>{{ clickhouse_query_log.table }}</table>
-        <partition_by>{{ clickhouse_part_log.partition_by }}</partition_by>
+        <partition_by>{{ clickhouse_query_log.partition_by }}</partition_by>
         <!-- Interval of flushing data. -->
         <flush_interval_milliseconds>{{ clickhouse_query_log.flush_interval_milliseconds }}</flush_interval_milliseconds>
     </query_log>
@@ -198,9 +198,9 @@
          https://clickhouse.yandex/reference_en.html#External%20Dictionaries
     -->
     <dictionaries_config>{{ clickhouse_external_dictionaries.config }}</dictionaries_config>
-    <!-- Dictionaries can be created when starting the server, or at first use. 
-         If set to ‘true’, each dictionary is created at first use. 
-         If dictionary creation failed, the function that was using the dictionary throws an exception. 
+    <!-- Dictionaries can be created when starting the server, or at first use.
+         If set to ‘true’, each dictionary is created at first use.
+         If dictionary creation failed, the function that was using the dictionary throws an exception.
          If ‘false’, all dictionaries are created when the server starts, and if there is an error, the server shuts down.
     -->
     <dictionaries_lazy_load>{{ clickhouse_external_dictionaries.lazy_load }}</dictionaries_lazy_load>
@@ -223,7 +223,7 @@
 {%      endfor %}
 {%    endif %}
     </compression>
-{%  endif %}    
+{%  endif %}
     <resharding>
         <task_queue_path>{{ clickhouse_resharding.task_queue_path }}</task_queue_path>
     </resharding>
