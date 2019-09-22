@@ -36,10 +36,14 @@
     name: "{{ item.pkg }}{% if item.state == 'present' and clickhouse_version is defined and clickhouse_version != '' %}={{ clickhouse_version }}*{% endif %}"
     state: "{{ item.state }}"
     force: "{{ clickhouse_apt_force_apply }}"
+    dpkg_options: "{{ dpkg_force_rewrite_configs | ternary('force-confdef,force-confnew', 'force-confdef,force-confold') }}"
     force_apt_get: yes
     update_cache: yes
     purge: yes
     cache_valid_time: "{{ apt_cache_timeout }}"
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+    RUNLEVEL: 1
   with_items:
     - "{{ clickhouse_apt_packages }}"
 
