@@ -1,20 +1,20 @@
+{{ ansible_managed | comment('xml') }}
 <?xml version="1.0"?>
-<!-- {{ ansible_managed }} -->
 <yandex>
-    <remote_servers>
-        <{{ clickhouse_cluster.name }}>
+  <remote_servers>
+    <{{ clickhouse_cluster.name }}>
 {%  for shard in clickhouse_cluster.shards %}
-            <shard>
-                <weight>{{ shard.weight }}</weight>
-                <internal_replication>{{ shard.internal_replication }}</internal_replication>
+      <shard>
+        <weight>{{ shard.weight }}</weight>
+        <internal_replication>{{ shard.internal_replication }}</internal_replication>
 {%      for replica in shard.replicas %}
-                <replica>
-                    <host>{{ replica.host }}</host>
-                    <port>{{ replica.port }}</port>
-                </replica>
+        <replica>
+          <host>{{ replica.host }}</host>
+          <port>{{ replica.port }}</port>
+        </replica>
 {%      endfor %}
-            </shard>
+      </shard>
 {%  endfor %}
-        </{{ clickhouse_cluster.name }}>
-    </remote_servers>
+    </{{ clickhouse_cluster.name }}>
+  </remote_servers>
 </yandex>
