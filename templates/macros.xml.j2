@@ -1,5 +1,5 @@
-{{ ansible_managed | comment('xml') }}
 <?xml version="1.0"?>
+{{ ansible_managed | comment('xml') }}
 <yandex>
   <macros>
 {% for key, value in clickhouse_macros.items() | sort %}
