@@ -9,7 +9,7 @@
 {% endif %}
 {% for server in clickhouse_zookeeper_servers %}
     <node index="{{ server['id'] }}">
-      <host>{{ server['ip'] }}</host>
+      <host>{{ server['address'] }}</host>
       <port>{{ server['port'] }}</port>
     </node>
 {% endfor %}

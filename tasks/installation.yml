@@ -23,13 +23,13 @@
   dpkg_selections:
     name: "{{ item.pkg }}"
     selection: "install"
+  with_items:
+    - "{{ clickhouse_apt_packages }}"
   when:
-    - clickhouse_apt_force_apply
+    - clickhouse_apt_force_apply | bool
     - item.state == 'present'
     - item.pkg in ansible_facts.packages
     - ansible_facts.packages[item.pkg][0].version != clickhouse_version
-  with_items:
-    - "{{ clickhouse_apt_packages }}"
 
 - name: Install ClickHouse packages
   apt:
@@ -52,12 +52,12 @@
   dpkg_selections:
     name: "{{ item.pkg }}"
     selection: "hold"
-  when:
-    - clickhouse_apt_hold_packages
-    - item.pkg in ansible_facts.packages
-    - item.state != 'absent'
   with_items:
     - "{{ clickhouse_apt_packages }}"
+  when:
+    - clickhouse_apt_hold_packages | bool
+    - item.pkg in ansible_facts.packages
+    - item.state != 'absent'
 
 - name: Override clickhouse-server systemd service
   block:

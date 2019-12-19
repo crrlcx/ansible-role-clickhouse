@@ -1,7 +1,9 @@
 ---
 # file: clickhouse/defaults/main.yml
-clickhouse_apt_force_apply: no
-clickhouse_apt_hold_packages: yes
+clickhouse_replica_node: false
+
+clickhouse_apt_force_apply: false
+clickhouse_apt_hold_packages: true
 clickhouse_apt_key_id: E0C56BD4
 clickhouse_apt_key_url: http://repo.yandex.ru/clickhouse/CLICKHOUSE-KEY.GPG
 clickhouse_apt_repository: "deb http://repo.yandex.ru/clickhouse/deb/stable main/"
@@ -15,8 +17,12 @@ clickhouse_apt_packages:
   - { pkg: "clickhouse-compressor",    state: "absent" }
 clickhouse_version: ''
 
-clickhouse_system_user:  clickhouse
 clickhouse_system_group: clickhouse
+clickhouse_system_user:  clickhouse
+
+clickhouse_max_open_files: 65536
+clickhouse_max_threads: 65536
+clickhouse_memlock_enabled: false
 
 clickhouse_directories:
   - { path: "{{ clickhouse_server_config_path }}",        owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0755" }
@@ -27,7 +33,7 @@ clickhouse_directories:
 
 clickhouse_host: localhost
 clickhouse_default_user: default
-clickhouse_default_password: ""
+clickhouse_default_password: ''
 clickhouse_server_config_path: /etc/clickhouse-server
 clickhouse_log_path: /var/log/clickhouse-server
 clickhouse_networks: []
@@ -49,17 +55,17 @@ clickhouse_profiles:
 
 clickhouse_users:
   - name: default
-    password: ""
+    password: ''
     networks:
       ip:
         - ::/0
-      host: ""
-      host_regexp: ""
+      host: ''
+      host_regexp: ''
     profile: default
     quota: default
     allow_databases: []
   - name: readonly
-    password: ""
+    password: ''
     networks:
       ip:
         - ::1
@@ -86,14 +92,14 @@ clickhouse_tcp_port: 9000
 
 clickhouse_openssl: [] #TODO
 
-clickhouse_http_server_default_response: "" # <![CDATA[<html ng-app="SMI2"><head><base href="http://ui.tabix.io/"></head><body><div ui-view="" class="content-ui"></div><script src="http://loader.tabix.io/master.js"></script></body></html>]]>
+clickhouse_http_server_default_response: '' # <![CDATA[<html ng-app="SMI2"><head><base href="http://ui.tabix.io/"></head><body><div ui-view='' class="content-ui"></div><script src="http://loader.tabix.io/master.js"></script></body></html>]]>
 
 clickhouse_interserver_http_port: 9009
 clickhouse_interserver_http_host: "{{ ansible_fqdn }}"
 
 clickhouse_listen_host:
-  - ::1
-  - 127.0.0.1
+  - '::1'
+  - '127.0.0.1'
 
 clickhouse_listen_reuse_port: 1
 clickhouse_listen_try: 1
@@ -156,7 +162,7 @@ clickhouse_external_dictionaries:
   lazy_load: true
 
 clickhouse_compression: []
-#  incl: 
+#  incl:
 #    name: clickhouse_compression
 #    optional: false
 #  case:
