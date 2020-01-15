@@ -4,13 +4,13 @@
   <zookeeper>
     <session_timeout_ms>{{ clickhouse_zookeeper_session_timeout_ms }}</session_timeout_ms>
     <operation_timeout_ms>{{ clickhouse_zookeeper_operation_timeout_ms }}</operation_timeout_ms>
-{% if clickhouse_zookeeper_user|length > 0 and clickhouse_zookeeper_password|length > 0 %}
+{% if clickhouse_zookeeper_user | length > 0 and clickhouse_zookeeper_password | length > 0 %}
     <identity>{{ clickhouse_zookeeper_user }}:{{ clickhouse_zookeeper_password }}</identity>
 {% endif %}
 {% for server in clickhouse_zookeeper_servers %}
-    <node index="{{ server['id'] }}">
-      <host>{{ server['address'] }}</host>
-      <port>{{ server['port'] }}</port>
+    <node index="{{ server.id }}">
+      <host>{{ server.address }}</host>
+      <port>{{ server.port }}</port>
     </node>
 {% endfor %}
   </zookeeper>

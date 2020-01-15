@@ -13,6 +13,13 @@
 - name: Add ClickHouse repository
   apt_repository:
     repo: "{{ clickhouse_apt_repository }}"
+  register: clickhouse_apt_repository_set
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  when:
+    - clickhouse_apt_repository_set.changed
 
 - name: get package facts
   package_facts:
@@ -40,7 +47,7 @@
     force_apt_get: yes
     update_cache: yes
     purge: yes
-    cache_valid_time: "{{ apt_cache_timeout }}"
+    cache_valid_time: "{{ clickhouse_apt_cache_timeout }}"
   environment:
     DEBIAN_FRONTEND: noninteractive
     RUNLEVEL: 1

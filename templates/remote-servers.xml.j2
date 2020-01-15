@@ -9,7 +9,7 @@
         <internal_replication>{{ shard.internal_replication }}</internal_replication>
 {%      for replica in shard.replicas %}
         <replica>
-          <host>{{ replica.host }}</host>
+          <host>{{ replica.address }}</host>
           <port>{{ replica.port }}</port>
         </replica>
 {%      endfor %}

@@ -2,6 +2,7 @@
 # file: clickhouse/defaults/main.yml
 clickhouse_replica_node: false
 
+clickhouse_apt_cache_timeout: 3600
 clickhouse_apt_force_apply: false
 clickhouse_apt_hold_packages: true
 clickhouse_apt_key_id: E0C56BD4
@@ -25,11 +26,11 @@ clickhouse_max_threads: 65536
 clickhouse_memlock_enabled: false
 
 clickhouse_directories:
-  - { path: "{{ clickhouse_server_config_path }}",        owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0755" }
-  - { path: "{{ clickhouse_server_config_path }}/conf.d", owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0755" }
-  - { path: "{{ clickhouse_tmp_path }}",                  owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0777" }
-  - { path: "{{ clickhouse_log_path }}",                  owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0775" }
-  - { path: "{{ clickhouse_path }}",                      owner: "{{ clickhouse_system_user }}", group: "{{ clickhouse_system_group }}", mode: "0700" }
+  - { path: "{{ clickhouse_server_config_path }}", mode: "0755" }
+  - { path: "{{ clickhouse_server_config_path }}/config.d", mode: "0755" }
+  - { path: "{{ clickhouse_tmp_path }}", mode: "0777" }
+  - { path: "{{ clickhouse_log_path }}", mode: "0775" }
+  - { path: "{{ clickhouse_path }}", mode: "0700" }
 
 clickhouse_host: localhost
 clickhouse_default_user: default

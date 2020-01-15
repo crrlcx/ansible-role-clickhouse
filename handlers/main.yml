@@ -2,7 +2,8 @@
 # file: clickhouse/handlers/main.yml
 
 - name: systemd daemon reload
-  command: systemctl daemon-reload
+  systemd:
+    daemon_reload: yes
   notify:
     - Restart ClickHouse
   when:
