@@ -5,6 +5,9 @@ LimitNPROC={{ clickhouse_max_threads }}
 {% if clickhouse_memlock_enabled | bool %}
 LimitMEMLOCK=infinity
 {% endif %}
+
+PermissionsStartOnly=true
+PrivateTmp=true
 Restart=always
 RestartSec=3
 TimeoutSec=300
