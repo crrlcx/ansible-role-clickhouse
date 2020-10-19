@@ -6,8 +6,8 @@
     path: "{{ item.path }}"
     owner: "{{ clickhouse_system_user }}"
     group: "{{ clickhouse_system_group }}"
-    mode: "{{ item.mode }}"
-    state: directory
+    mode: "{{ item.mode | d(omit) }}"
+    state: "{{ item.state | d('directory') }}"
   with_items:
     - "{{ clickhouse_directories }}"
 

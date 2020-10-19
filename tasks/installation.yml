@@ -25,19 +25,6 @@
   package_facts:
     manager: auto
 
-- name: Unhold {{ item.pkg }} package version
-  become: yes
-  dpkg_selections:
-    name: "{{ item.pkg }}"
-    selection: "install"
-  with_items:
-    - "{{ clickhouse_apt_packages }}"
-  when:
-    - clickhouse_apt_force_apply | bool
-    - item.state == 'present'
-    - item.pkg in ansible_facts.packages
-    - ansible_facts.packages[item.pkg][0].version != clickhouse_version
-
 - name: Install ClickHouse packages
   apt:
     name: "{{ item.pkg }}{% if item.state == 'present' and clickhouse_version is defined and clickhouse_version != '' %}={{ clickhouse_version }}*{% endif %}"

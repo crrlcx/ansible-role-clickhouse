@@ -10,16 +10,16 @@ clickhouse_apt_key_url: http://repo.yandex.ru/clickhouse/CLICKHOUSE-KEY.GPG
 clickhouse_apt_repository: "deb http://repo.yandex.ru/clickhouse/deb/stable main/"
 clickhouse_apt_packages:
   - { pkg: "clickhouse-common-static", state: "present" }
-  - { pkg: "clickhouse-server",        state: "present" }
-  - { pkg: "clickhouse-client",        state: "present" }
-  - { pkg: "clickhouse-server-base",   state: "absent" }
+  - { pkg: "clickhouse-server", state: "present" }
+  - { pkg: "clickhouse-client", state: "present" }
+  - { pkg: "clickhouse-server-base", state: "absent" }
   - { pkg: "clickhouse-server-common", state: "absent" }
-  - { pkg: "clickhouse-common-dbg",    state: "absent" }
-  - { pkg: "clickhouse-compressor",    state: "absent" }
-clickhouse_version: ''
+  - { pkg: "clickhouse-common-dbg", state: "absent" }
+  - { pkg: "clickhouse-compressor", state: "absent" }
+clickhouse_version: ""
 
 clickhouse_system_group: clickhouse
-clickhouse_system_user:  clickhouse
+clickhouse_system_user: clickhouse
 
 clickhouse_max_open_files: 65536
 clickhouse_max_threads: 65536
@@ -28,17 +28,18 @@ clickhouse_memlock_enabled: false
 clickhouse_directories:
   - { path: "{{ clickhouse_server_config_path }}", mode: "0755" }
   - { path: "{{ clickhouse_server_config_path }}/config.d", mode: "0755" }
+  - { path: "{{ clickhouse_server_config_path }}/conf.d", state: "absent" }
   - { path: "{{ clickhouse_tmp_path }}", mode: "0777" }
   - { path: "{{ clickhouse_log_path }}", mode: "0775" }
   - { path: "{{ clickhouse_path }}", mode: "0700" }
 
 clickhouse_host: localhost
 clickhouse_default_user: default
-clickhouse_default_password: ''
+clickhouse_default_password: ""
 clickhouse_server_config_path: /etc/clickhouse-server
 clickhouse_log_path: /var/log/clickhouse-server
 clickhouse_networks: []
-clickhouse_default_networks: [ '::1', '127.0.0.1' ]
+clickhouse_default_networks: ["::1", "127.0.0.1"]
 clickhouse_databases: []
 #  - { name: "example1", state: "absent"  }
 #  - { name: "example2", state: "present" }
@@ -56,17 +57,17 @@ clickhouse_profiles:
 
 clickhouse_users:
   - name: default
-    password: ''
+    password: ""
     networks:
       ip:
         - ::/0
-      host: ''
-      host_regexp: ''
+      host: ""
+      host_regexp: ""
     profile: default
     quota: default
     allow_databases: []
   - name: readonly
-    password: ''
+    password: ""
     networks:
       ip:
         - ::1
@@ -78,7 +79,14 @@ clickhouse_users:
 clickhouse_quotas:
   - name: default
     interval:
-      - { duration: 3600, queries: 0, errors: 0, result_rows: 0, read_rows: 0, execution_time: 0 }
+      - {
+          duration: 3600,
+          queries: 0,
+          errors: 0,
+          result_rows: 0,
+          read_rows: 0,
+          execution_time: 0,
+        }
 
 # CONFIG.XML
 clickhouse_logger:
@@ -93,14 +101,14 @@ clickhouse_tcp_port: 9000
 
 clickhouse_openssl: [] #TODO
 
-clickhouse_http_server_default_response: '' # <![CDATA[<html ng-app="SMI2"><head><base href="http://ui.tabix.io/"></head><body><div ui-view='' class="content-ui"></div><script src="http://loader.tabix.io/master.js"></script></body></html>]]>
+clickhouse_http_server_default_response: "" # <![CDATA[<html ng-app="SMI2"><head><base href="http://ui.tabix.io/"></head><body><div ui-view='' class="content-ui"></div><script src="http://loader.tabix.io/master.js"></script></body></html>]]>
 
 clickhouse_interserver_http_port: 9009
 clickhouse_interserver_http_host: "{{ ansible_fqdn }}"
 
 clickhouse_listen_host:
-  - '::1'
-  - '127.0.0.1'
+  - "::1"
+  - "127.0.0.1"
 
 clickhouse_listen_reuse_port: 1
 clickhouse_listen_try: 1
@@ -131,23 +139,27 @@ clickhouse_tune_settings:
   - name: default_session_timeout
     value: 60
 
-clickhouse_graphite: []
+clickhouse_graphite:
+  []
   # - { host: localhost, port: 42000, timeout: 0.1, interval: 60, root_path: one_min, metrics: true, events: true, asynchronous_metrics: true  }
   # - { host: localhost, port: 42000, timeout: 0.1, interval: 1,  root_path: one_sec, metrics: true, events: true, asynchronous_metrics: false }
 
-clickhouse_query_log: []
+clickhouse_query_log:
+  []
   # database: system
   # table: query_log
   # partition_by: "toMonday(event_date)"
   # flush_interval_milliseconds: 7500
 
-clickhouse_query_thread_log: []
+clickhouse_query_thread_log:
+  []
   # database: system
   # table: query_thread_log
   # partition_by: "toMonday(event_date)"
   # flush_interval_milliseconds: 7500
 
-clickhouse_part_log: []
+clickhouse_part_log:
+  []
   # database: system
   # table: part_log
   # partition_by: "toMonday(event_date)"
@@ -249,7 +261,7 @@ clickhouse_macros: []
 clickhouse_cluster: []
 
 clickhouse_zookeeper_servers: []
-clickhouse_zookeeper_user: ''
-clickhouse_zookeeper_password: ''
+clickhouse_zookeeper_user: ""
+clickhouse_zookeeper_password: ""
 clickhouse_zookeeper_session_timeout_ms: 30000
 clickhouse_zookeeper_operation_timeout_ms: 10000
